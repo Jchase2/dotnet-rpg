@@ -13,6 +13,9 @@ namespace dotnet_rpg
         {
             CreateMap<Character, GetCharacterDto>();
             CreateMap<AddCharacterDto, Character>();
+
+            // This is for if we want automapper to automatically chagne out properties.
+            // CreateMap<UpdateCharacterDto, Character>();
         }
     }
 }

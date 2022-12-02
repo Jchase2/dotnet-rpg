@@ -30,6 +30,28 @@ namespace dotnet_rpg.Services.CharacterService
             return serviceResponse;
         }
 
+        public async Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id)
+        {
+            ServiceResponse<List<GetCharacterDto>> response = new ServiceResponse<List<GetCharacterDto>>();
+
+            try
+            {
+                Character character = characters.First(c => c.Id == id);
+
+                characters.Remove(character);
+
+                response.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
             return new ServiceResponse<List<GetCharacterDto>> { Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList() };
@@ -51,6 +73,12 @@ namespace dotnet_rpg.Services.CharacterService
             {
                 Character character = characters.FirstOrDefault(c => c.Id == updatedCharacter.Id);
 
+                // Way of automatically updating all the properties with automapper.
+                // _mapper.Map(updatedCharacter, character);
+
+                // This way we set the properties manually, if we don't want automapper to change all
+                // the properties.
+
                 character.Name = updatedCharacter.Name;
                 character.HitPOints = updatedCharacter.HitPOints;
                 character.Strength = updatedCharacter.Strength;
@@ -60,7 +88,7 @@ namespace dotnet_rpg.Services.CharacterService
 
                 response.Data = _mapper.Map<GetCharacterDto>(character);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 response.Success = false;
                 response.Message = ex.Message;
